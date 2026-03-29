@@ -3025,6 +3025,7 @@
 				max = options.max or options.maximum or 100,
 				intervals = options.interval or options.decimal or 1,
 				default = options.default or 10,
+				precision = options.precision,
 
 				dragging = false,
 				value = options.default or 10, 
@@ -3208,7 +3209,13 @@
 				cfg.value = math.clamp(library:round(value, cfg.intervals), cfg.min, cfg.max)
 
 				fill.Size = dim2((cfg.value - cfg.min) / (cfg.max - cfg.min), 0, 1, 0)
-				slidertext.Text = tostring(cfg.value) .. cfg.suffix .. "/" .. tostring(cfg.max) .. cfg.suffix
+				local function _fmtNum(n)
+					if cfg.precision then
+						return string.format("%." .. cfg.precision .. "f", n)
+					end
+					return tostring(n)
+				end
+				slidertext.Text = _fmtNum(cfg.value) .. cfg.suffix .. "/" .. _fmtNum(cfg.max) .. cfg.suffix
 				flags[cfg.flag] = cfg.value
 
 				cfg.callback(flags[cfg.flag])
